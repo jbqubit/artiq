@@ -118,3 +118,14 @@ class TCA6424A:
 
         self._write24(0x8c, 0)  # set all directions to output
         self._write24(0x84, outputs_le)  # set levels
+
+class TCA9548A:
+    """todo: Driver for the TCA9548A I2C I/O expander."""
+    def __init__(self, dmgr, busno=0, address=0x44, core_device="core"):
+        self.core = dmgr.get(core_device)
+        self.busno = busno
+        self.address = address
+
+    @kernel
+    def set(self, outputs):
+        pass

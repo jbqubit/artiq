@@ -23,6 +23,7 @@ from misoc.integration.builder import builder_args, builder_argdict
 from artiq.gateware.amp import AMPSoC, build_artiq_soc
 from artiq.gateware import rtio
 from artiq.gateware.ad9154_fmc_ebz import ad9154_fmc_ebz
+from artiq.gateware.fmc_lpc_to_vhdci_breakout import fmc_lpc_to_vhdci_breakout_io
 from artiq.gateware.rtio.phy import (ttl_simple, ttl_serdes_7series,
                                      sawg)
 from artiq import __version__ as artiq_version
@@ -177,6 +178,7 @@ class Phaser(MiniSoC, AMPSoC):
 
         platform = self.platform
         platform.add_extension(ad9154_fmc_ebz)
+        platform.add_extension(fmc_lpc_to_vhdci_breakout_io)
 
         self.submodules.leds = gpio.GPIOOut(Cat(
             platform.request("user_led", 0),
@@ -201,8 +203,15 @@ class Phaser(MiniSoC, AMPSoC):
 
         rtio_channels = []
 
-        phy = ttl_serdes_7series.InOut_8X(
-            platform.request("user_sma_gpio_n"))
+        # add FMC-LPC to VHDCI ext0 as 3U TTL BNC board
+        for i in range(8):
+            pads = platform.request("lpc_vhdci_ext0", i)
+            phy = ttl_serdes_7series.Output_8X(pads.p, pads.n)
+            self.submodules += phy
+            rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=64))
+
+        pads = platform.request("sma_ttl_diff", 0)
+        phy = ttl_serdes_7series.Output_8X(pads.p, pads.n)
         self.submodules += phy
         rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=128))
 
@@ -210,16 +219,27 @@ class Phaser(MiniSoC, AMPSoC):
         self.submodules += phy
         rtio_channels.append(rtio.Channel.from_phy(phy))
 
-        sysref_pads = platform.request("ad9154_sysref")
-        phy = ttl_serdes_7series.Input_8X(sysref_pads.p, sysref_pads.n)
-        self.submodules += phy
-        rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=32,
-                                                   ofifo_depth=2))
-
-        self.config["RTIO_FIRST_SAWG_CHANNEL"] = len(rtio_channels)
-        rtio_channels.extend(rtio.Channel.from_phy(phy)
-                             for sawg in self.ad9154.sawgs
-                             for phy in sawg.phys)
+        # speed compilation of gateware by removing sawg PHYs
+        #
+        # phy = ttl_serdes_7series.InOut_8X(
+        #     platform.request("user_sma_gpio_n"))
+        # self.submodules += phy
+        # rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=128))
+        #
+        # phy = ttl_simple.Output(platform.request("user_led", 2))
+        # self.submodules += phy
+        # rtio_channels.append(rtio.Channel.from_phy(phy))
+        #
+        # sysref_pads = platform.request("ad9154_sysref")
+        # phy = ttl_serdes_7series.Input_8X(sysref_pads.p, sysref_pads.n)
+        # self.submodules += phy
+        # rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=32,
+        #                                            ofifo_depth=2))
+        #
+        # self.config["RTIO_FIRST_SAWG_CHANNEL"] = len(rtio_channels)
+        # rtio_channels.extend(rtio.Channel.from_phy(phy)
+        #                      for sawg in self.ad9154.sawgs
+        #                      for phy in sawg.phys)
 
         self.config["HAS_RTIO_LOG"] = None
         self.config["RTIO_LOG_CHANNEL"] = len(rtio_channels)

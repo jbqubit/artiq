@@ -1,6 +1,7 @@
 # The RTIO channel numbers here are for Phaser on KC705.
 
-core_addr = "kc705aux.lab.m-labs.hk"
+core_addr = "192.168.1.71"
+vhdcistart = 0
 
 device_db = {
     "core": {
@@ -20,10 +21,66 @@ device_db = {
         "module": "artiq.coredevice.cache",
         "class": "CoreCache"
     },
-    "ttl_sma": {
+
+    "lpc_vhdci_port0_ttl0": {
         "type": "local",
         "module": "artiq.coredevice.ttl",
-        "class": "TTLInOut",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 0}
+    },
+    "lpc_vhdci_port0_ttl1": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 1}
+    },
+    "lpc_vhdci_port0_ttl2": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 2}
+    },
+    "lpc_vhdci_port0_ttl3": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 3}
+    },
+    "lpc_vhdci_port0_ttl4": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 4}
+    },
+    "lpc_vhdci_port0_ttl5": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 5}
+    },
+    "lpc_vhdci_port0_ttl6": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 6}
+    },
+    "lpc_vhdci_port0_ttl7": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 7}
+    },
+
+    "lpc_vhdci_i2c": {
+        "type": "local",
+        "module": "artiq.coredevice.i2c",
+        "class": "TCA9548A",
+        "arguments": {"address": 0x44}
+    },
+    "sma_ttl_diff": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
         "arguments": {"channel": 0}
     },
     "led": {
@@ -31,46 +88,5 @@ device_db = {
         "module": "artiq.coredevice.ttl",
         "class": "TTLOut",
         "arguments": {"channel": 1}
-    },
-    "sysref": {
-        "type": "local",
-        "module": "artiq.coredevice.ttl",
-        "class": "TTLInOut",
-        "arguments": {"channel": 2}
-    },
-    "converter_spi": {
-        "type": "local",
-        "module": "artiq.coredevice.spi",
-        "class": "NRTSPIMaster",
-    },
-    "ad9154_spi": {
-        "type": "local",
-        "module": "artiq.coredevice.ad9154_spi",
-        "class": "AD9154",
-        "arguments": {"spi_device": "converter_spi", "chip_select": 1}
-    },
-    "sawg0": {
-        "type": "local",
-        "module": "artiq.coredevice.sawg",
-        "class": "SAWG",
-        "arguments": {"channel_base": 3, "parallelism": 2}
-    },
-    "sawg1": {
-        "type": "local",
-        "module": "artiq.coredevice.sawg",
-        "class": "SAWG",
-        "arguments": {"channel_base": 13, "parallelism": 2}
-    },
-    "sawg2": {
-        "type": "local",
-        "module": "artiq.coredevice.sawg",
-        "class": "SAWG",
-        "arguments": {"channel_base": 23, "parallelism": 2}
-    },
-    "sawg3": {
-        "type": "local",
-        "module": "artiq.coredevice.sawg",
-        "class": "SAWG",
-        "arguments": {"channel_base": 33, "parallelism": 2}
     }
 }
