@@ -77,16 +77,22 @@ device_db = {
         "class": "TCA9548A",
         "arguments": {"address": 0x44}
     },
-    "sma_ttl_diff": {
+    "sma_ttl_p": {
         "type": "local",
         "module": "artiq.coredevice.ttl",
         "class": "TTLOut",
-        "arguments": {"channel": 0}
+        "arguments": {"channel": vhdcistart + 8}
+    },
+        "sma_ttl_n": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 9}
     },
     "led": {
         "type": "local",
         "module": "artiq.coredevice.ttl",
         "class": "TTLOut",
-        "arguments": {"channel": 1}
+        "arguments": {"channel": vhdcistart + 10}
     }
 }

@@ -210,14 +210,15 @@ class Phaser(MiniSoC, AMPSoC):
             self.submodules += phy
             rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=64))
 
-        pads = platform.request("sma_ttl_diff", 0)
-        phy = ttl_serdes_7series.Output_8X(pads.p, pads.n)
+        pads = platform.request("user_sma_gpio_p")
+        phy = ttl_serdes_7series.Output_8X(pads)
         self.submodules += phy
         rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=128))
 
-        phy = ttl_simple.Output(platform.request("user_led", 2))
+        pads = platform.request("user_sma_gpio_n")
+        phy = ttl_serdes_7series.Output_8X(pads)
         self.submodules += phy
-        rtio_channels.append(rtio.Channel.from_phy(phy))
+        rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=128))
 
         # speed compilation of gateware by removing sawg PHYs
         #
