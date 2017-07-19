@@ -83,10 +83,22 @@ device_db = {
         "class": "TTLOut",
         "arguments": {"channel": vhdcistart + 8}
     },
-    "led": {
+    "lpc_vhdci_latch": {
         "type": "local",
         "module": "artiq.coredevice.ttl",
         "class": "TTLOut",
         "arguments": {"channel": vhdcistart + 9}
+    },
+    "lpc_vhdci_clk": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 10}
+    },
+    "lpc_vhdci_ser": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLOut",
+        "arguments": {"channel": vhdcistart + 11}
     }
 }

@@ -215,6 +215,19 @@ class Phaser(MiniSoC, AMPSoC):
         self.submodules += phy
         rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=128))
 
+        # configuration pins for SN74LV595APWT on FMC-LPC to VHDCI adapter
+        pads = platform.request("lpc_fmc_vhdci_config", 0)
+        phy = ttl_simple.Output(pads.latch)
+        self.submodules += phy
+        rtio_channels.append(rtio.Channel.from_phy(phy))
+        phy = ttl_simple.Output(pads.clk)
+        self.submodules += phy
+        rtio_channels.append(rtio.Channel.from_phy(phy))
+        phy = ttl_simple.Output(pads.ser)
+        self.submodules += phy
+        rtio_channels.append(rtio.Channel.from_phy(phy))
+
+
         # speed compilation of gateware by removing sawg PHYs
         #
         # phy = ttl_serdes_7series.InOut_8X(
