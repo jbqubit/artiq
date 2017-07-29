@@ -4,7 +4,6 @@ from artiq.experiment import *
 class SAWGTestTwoTone(EnvExperiment):
     def build(self):
         self.setattr_device("core")
-        self.setattr_device("led")
         self.setattr_device("ttl_sma")
 
         self.setattr_device("sawg0")
@@ -24,6 +23,7 @@ class SAWGTestTwoTone(EnvExperiment):
         self.sawg2.reset()
         self.sawg3.reset()
 
+
         self.sawg0.config.set_clr(1, 1, 1)
         delay(10*us)
         self.sawg0.config.set_out_max(1.)
@@ -38,8 +38,7 @@ class SAWGTestTwoTone(EnvExperiment):
             order = 3
 
             delay(20*ms)
-            self.led.on()
-            self.ttl_sma.on()
+            self.ttl_sma.pulse(3*us)
             self.sawg0.frequency0.set(10*MHz)
             self.sawg0.phase0.set(0.)
             self.sawg0.frequency1.set(1*MHz)
@@ -60,5 +59,3 @@ class SAWGTestTwoTone(EnvExperiment):
 
             self.sawg1.amplitude1.set(.0)
             self.sawg1.amplitude2.set(.0)
-            self.ttl_sma.off()
-            self.led.off()

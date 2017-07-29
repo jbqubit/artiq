@@ -2,6 +2,7 @@
 
 core_addr = "192.168.1.71"
 vhdcistart = 0
+sawgstart = vhdcistart + 12
 
 device_db = {
     "core": {
@@ -70,7 +71,8 @@ device_db = {
         "class": "TTLOut",
         "arguments": {"channel": vhdcistart + 7}
     },
-
+    # support for FMC HPC AD9154 prototype board (4 channel SAWG)
+    # using ARTIQ phaser demo
     "lpc_vhdci_i2c": {
         "type": "local",
         "module": "artiq.coredevice.i2c",
@@ -100,5 +102,48 @@ device_db = {
         "module": "artiq.coredevice.ttl",
         "class": "TTLOut",
         "arguments": {"channel": vhdcistart + 11}
-    }
+    },
+
+    "sysref": {
+        "type": "local",
+        "module": "artiq.coredevice.ttl",
+        "class": "TTLInOut",
+        "arguments": {"channel": sawgstart + 0}
+    },
+    "converter_spi": {
+        "type": "local",
+        "module": "artiq.coredevice.spi",
+        "class": "NRTSPIMaster",
+    },
+    "ad9154_spi": {
+        "type": "local",
+        "module": "artiq.coredevice.ad9154_spi",
+        "class": "AD9154",
+        "arguments": {"spi_device": "converter_spi", "chip_select": 1}
+    },
+    "sawg0": {
+        "type": "local",
+        "module": "artiq.coredevice.sawg",
+        "class": "SAWG",
+        "arguments": {"channel_base": sawgstart + 1, "parallelism": 2}
+    },
+    "sawg1": {
+        "type": "local",
+        "module": "artiq.coredevice.sawg",
+        "class": "SAWG",
+        "arguments": {"channel_base": sawgstart + 11, "parallelism": 2}
+    },
+    "sawg2": {
+        "type": "local",
+        "module": "artiq.coredevice.sawg",
+        "class": "SAWG",
+        "arguments": {"channel_base": sawgstart + 21, "parallelism": 2}
+    },
+    "sawg3": {
+        "type": "local",
+        "module": "artiq.coredevice.sawg",
+        "class": "SAWG",
+        "arguments": {"channel_base": sawgstart + 31, "parallelism": 2}
+    },
+    "ttl_sma": "sma_ttl_diff"
 }

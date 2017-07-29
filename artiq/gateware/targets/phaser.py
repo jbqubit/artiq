@@ -229,26 +229,26 @@ class Phaser(MiniSoC, AMPSoC):
 
 
         # speed compilation of gateware by removing sawg PHYs
-        #
+
         # phy = ttl_serdes_7series.InOut_8X(
         #     platform.request("user_sma_gpio_n"))
         # self.submodules += phy
         # rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=128))
-        #
+
         # phy = ttl_simple.Output(platform.request("user_led", 2))
         # self.submodules += phy
         # rtio_channels.append(rtio.Channel.from_phy(phy))
-        #
-        # sysref_pads = platform.request("ad9154_sysref")
-        # phy = ttl_serdes_7series.Input_8X(sysref_pads.p, sysref_pads.n)
-        # self.submodules += phy
-        # rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=32,
-        #                                            ofifo_depth=2))
-        #
-        # self.config["RTIO_FIRST_SAWG_CHANNEL"] = len(rtio_channels)
-        # rtio_channels.extend(rtio.Channel.from_phy(phy)
-        #                      for sawg in self.ad9154.sawgs
-        #                      for phy in sawg.phys)
+
+        sysref_pads = platform.request("ad9154_sysref")
+        phy = ttl_serdes_7series.Input_8X(sysref_pads.p, sysref_pads.n)
+        self.submodules += phy
+        rtio_channels.append(rtio.Channel.from_phy(phy, ififo_depth=32,
+                                                   ofifo_depth=2))
+
+        self.config["RTIO_FIRST_SAWG_CHANNEL"] = len(rtio_channels)
+        rtio_channels.extend(rtio.Channel.from_phy(phy)
+                             for sawg in self.ad9154.sawgs
+                             for phy in sawg.phys)
 
         self.config["HAS_RTIO_LOG"] = None
         self.config["RTIO_LOG_CHANNEL"] = len(rtio_channels)
